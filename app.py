@@ -17,6 +17,8 @@ app.head = [
           href="https://fonts.googleapis.com/css?family=Tangerine"
     )]
 
+server = app.server
+
 covid = Coronavirus()
 
 app.layout = html.Div(
