@@ -19,9 +19,6 @@ app.head = [
 
 covid = Coronavirus()
 
-#country = 'Poland'
-#dat = covid.get_country_data(country)
-
 app.layout = html.Div(
                 [
                     html.Div(
@@ -46,16 +43,31 @@ app.layout = html.Div(
                     ),
                     html.Div([], style = {'clear' : 'both'}), # empty div to clear floating formatting
                     html.Div(
+                        ['"I have no idea what\'s awaiting me, or what will happen when this all ends. For the moment I know this: there are sick people and they need curing."'
+                        ],
+                        id='inspiring-quote'
+                            ),
+                    html.Div(
+                        ["Albert Camus, The Plague"
+                        ],
+                        id='quote-author'
+                            ),
+                    html.Div(
                         [
-                            f'''
-                                Coronavirus disease 2019 (COVID-19) is an infectious disease caused by the severe acute respiratory
-                                syndrome coronavirus 2 (SARS-CoV-2).[9] The disease has spread globally since 2019, resulting in the 2019–20 coronavirus pandemic.[10][11] 
-                                Common symptoms include fever, cough and shortness of breath. Muscle pain, sputum production and sore throat are less 
-                                common symptoms.[6][12] While the majority of cases result in mild symptoms,[13] some progress to pneumonia and multi-organ failure.[10][14] 
-                                The deaths per number of diagnosed cases is estimated at between 1% and 5% but varies by age and other health conditions.[15][16]
+                            dcc.Markdown(f'''
+                                "Coronaviruses (CoV) are a large family of viruses that cause illness ranging from the common cold to more severe
+                                 diseases such as Middle East Respiratory Syndrome (MERS-CoV) and Severe Acute Respiratory Syndrome (SARS-CoV). 
+                                 Coronavirus disease (COVID-19) is a new strain that was discovered in 2019 and has not been previously identified in humans.
+                                 Coronaviruses are zoonotic, meaning they are transmitted between animals and people.  Detailed investigations found that SARS-CoV was transmitted
+                                 from civet cats to humans and MERS-CoV from dromedary camels to humans. Several known coronaviruses are circulating in animals
+                                 that have not yet infected humans.Common signs of infection include respiratory symptoms, fever, cough, shortness of breath and breathing difficulties. In more severe cases,
+                                 infection can cause pneumonia, severe acute respiratory syndrome, kidney failure and even death. "
+ 
 
-                                Source: Wikipedia
-                            '''
+                                Source: [WHO](https://www.who.int/health-topics/coronavirus)
+
+                                More from WHO: [Myths about coronavirus](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters)
+                            ''', id='info-text')
                         ], 
                         id='info'
                     ),
@@ -124,7 +136,7 @@ app.layout = html.Div(
                                     )
                                 ]
                             ),
-                            html.H4('Range of people shown'),
+                            html.H4('Range of people:'),
                             dcc.RangeSlider(
                                 id= 'slider',
                                 step=1,
@@ -139,14 +151,14 @@ app.layout = html.Div(
                         [
                             html.H4('Information', style = {'margin' : '0px'}),
                             dcc.Markdown(
-                                '''* This application provides information and statistics about COVID-19. Data is being gathered from
+                                '''* This application provides information and statistics about COVID-19. Data is gathered from
                                     **[source](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)**
-                                    (it's being updated once a day).
+                                    (it's updated once a day).
                                 ''',
                                 style = {'line-height' : '0.2'}
                             ),
                             dcc.Markdown(
-                                '''* Application was written with Python [Dash](https://dash.plot.ly/) framework and custom CSS.''',
+                                '''* Application was developed with Python [Dash](https://dash.plot.ly/) framework and custom CSS.''',
                                 style = {'line-height' : '0.2'}
                             ),
                             html.P(
@@ -155,7 +167,8 @@ app.layout = html.Div(
                             )
                         ],
                         id='footer',
-                        className='tile')
+                        className='tile'),
+                        html.Div(children=[covid.to_json()], id='data-json', style={'display': 'none'})
                 ],
                 id ='main-container'
             )
@@ -169,53 +182,60 @@ def font():
 
 @app.callback(
     Output('country-summary-graph','figure'),
-    [Input('country-choose-main', 'value')])
-def update_country_summary_data(value):
-    global covid
+    [Input('country-choose-main', 'value'),
+    Input('data-json', 'children')])
+def update_country_summary_data(country, children):
+    covid = Coronavirus(json=children[0], from_json=True)
     return {
-            'data': covid.get_country_data(value),
+            'data': covid.get_country_data(country),
             'layout': {
-                'title': f'People infected in {value}',
+                'title': f'People infected in {country}',
                 'font' : font()
             }
         }
 
 @app.callback(
     Output('country-rate-graph','figure'),
-    [Input('country-choose-rate', 'value')]
+    [Input('country-choose-rate', 'value'),
+    Input('data-json', 'children')]
 )
-def update_growing_rate_data(value):
-    global covid
+def update_growing_rate_data(country, children):
+    covid = Coronavirus(json=children[0], from_json=True)
     return {
-        'data' : covid.get_country_rate_data(value),
+        'data' : covid.get_country_rate_data(country),
         'layout' : {
-            'title' : f'Increase in number infected comparing to previuos day in {value}',
+            'title' : f'Increase in number infected comparing to previuos day in {country}',
             'font' : font()
         }
     }
 
 @app.callback(
     Output('overall-stats', 'figure'),
-    [Input('country-choose-stats', 'value')]
+    [Input('country-choose-stats', 'value'),
+    Input('data-json', 'children')]
 )
-def update_overall_stats(value):
-    global covid
+def update_overall_stats(country, children):
+    covid = Coronavirus(json=children[0], from_json=True)
     return {
-        'data' : covid.overall_stats(value),
+        'data' : covid.overall_stats(country),
         'layout' : {
-            'title' : f'Summary statistics for {value}',
-            'font' : font()
+            'title' : f'Summary statistics for {country}',
+            'font' : font(),
+            'showlegend' : False
         }
     }
 
 @app.callback(
     Output('type-comparison', 'figure'),
     [Input('type-choose-comparison', 'value'),
-    Input('slider', 'value')]
+    Input('slider', 'value'),
+    Input('data-json', 'children')]
 )
-def update_comparison(type_, range_val):
-    global covid
-    range_val = [10**val for val in range_val]
+def update_comparison(type_, range_val, children):
+    covid = Coronavirus(json=children[0], from_json=True)
+    if not range_val:
+        raise dash.exceptions.PreventUpdate
+    range_val = [10**val if val >= 0 else 0 for val in range_val ]
     return {
         'data' : covid.comparison_bars(type_, range_val),
         'layout' : {
@@ -226,47 +246,18 @@ def update_comparison(type_, range_val):
     }
 
 @app.callback(
-    Output('slider', 'max'), 
-    [Input('type-choose-comparison', 'value')]
+    [Output('slider', 'min'), Output('slider', 'max'),
+    Output('slider', 'value'), Output('slider', 'marks')],
+    [Input('type-choose-comparison', 'value'),
+    Input('data-json', 'children')]
 )
-def update_slider_max(type_):
-    global covid
-    max_ = covid.data.loc[(covid.data['Country/Region'] == 'World') & (covid.data['type'] == type_)].iloc[:, -1]
-    return calc_log(int(max_))
-
-@app.callback(
-    Output('slider', 'min'), 
-    [Input('type-choose-comparison', 'value')]
-)
-def update_slider_min(value):
-    return 0
-
-@app.callback(
-    Output('slider', 'value'),
-    [Input('type-choose-comparison', 'value')]
-)
-def update_slider_values(type_):
-    global covid
-    max_ = covid.data.loc[(covid.data['Country/Region'] == 'World') & (covid.data['type'] == type_)].iloc[:, -1]
-    return (0, calc_log(int(max_)))
-
-@app.callback(
-    Output('slider', 'marks'),
-    [Input('type-choose-comparison', 'value')]
-)
-def update_slider_marks(type_):
-    global covid
-    max_ = int(covid.data.loc[(covid.data['Country/Region'] == 'World') & (covid.data['type'] == type_)].iloc[:, -1])
-    marks = {i: {'label' : str(10**i) } for i in range(0, max_,)}
-    return marks
-
-# @app.callback(
-#     Output('map', 'figure'),
-#     [Input('map-dropdown', 'value')]
-# )
-# def update_map(value):
-#     global covid
-#     return covid.prepare_map_data(value)
+def update_slider(type_, children):
+    covid = Coronavirus(json=children[0], from_json=True)
+    max_ = covid.data.loc[(covid.data['Country'] == 'World') & (covid.data['type'] == type_)].iloc[:, -1]
+    log_max = calc_log(int(max_))
+    marks = {i: {'label' : str(10**i) } for i in range(0, log_max + 1)} # + 1 because we want to include biggest value
+    marks[-1] = {'label' : '0'}
+    return [-1, log_max, (-1, log_max), marks]
 
 if __name__ == '__main__':
     app.run_server(debug=True)

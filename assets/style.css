@@ -12,7 +12,7 @@
 }
 
 #top-block{
-    padding-bottom: 150px;
+    padding-bottom: 100px;
 }
 
 #title{
@@ -30,17 +30,30 @@
     text-align: right;
 }
 
-#info {
-    text-align: left;
-    text-align: justify;
-    padding-top : 30px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 30px;
-    width : 300px;
-    float : left;
+#inspiring-quote{
+    font-family: Cambria;
+    font-style: italic;
+    font-size: 16px;
+    margin-left: 900px;
+}
+
+#quote-author{
+    text-align: right;
     font-size: 15px;
-    border-style : solid;
+    margin-top:10px;
+    margin-bottom: 50px;
+}
+
+#info {
+    text-align: justify;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    width: 370px;
+    float: left;
+    font-size: 15px;
+    border-style: solid;
     border-width: 1px;
     border-color: #bdbdbd;
     box-shadow: 3px 3px 3px lightgrey;
@@ -51,7 +64,7 @@
     margin-right : 0px;
     margin-top : 0px;
     padding-right : 0px;
-    width : 1000px;
+    width : 970px;
     float : right;
     box-shadow: 3px 3px 3px lightgrey;
     padding-top: 25px;
@@ -59,14 +72,6 @@
     border-style : solid;
     border-width: 1px;
     border-color: #bdbdbd;
-}
-
-#country-timeseries{
-    float : left;
-}
-
-#country-summary{
-    float : right;
 }
 
 .tile{
@@ -77,6 +82,14 @@
     padding: 20px;
     box-shadow: 3px 3px 3px lightgrey;
     width : 650px;
+}
+
+#country-timeseries{
+    float : left;
+}
+
+#country-summary{
+    float : right;
 }
 
 #rate-graph{
@@ -97,3 +110,36 @@
     font-size: 10px;
 }
 
+h4 {
+    font-weight: 200;
+    font-size: 15px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.rc-slider-track {
+    background-color: #4292c6;
+  }
+  
+  .rc-slider-dot-active {  
+    border-color: #4292c6;
+    border: solid 1px #4292c6;
+  }
+  
+  .rc-slider-handle {
+    background-color: #4292c6;
+    border-color: #4292c6;
+  }
+  
+  .rc.slider-handle:hover {
+    border-color: #4292c6;
+  }
+  
+  .rc.slider-handle-active:active {
+    border-color: #4292c6;
+  }
+
+  .rc-slider-mark-text{
+      font-size: 14px;
+  }
