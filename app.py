@@ -6,8 +6,6 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from coronavirus import Coronavirus
 from functions import calc_log
-import os
-
 
 app = dash.Dash(__name__)
 app.title = 'Coronavirus insight'
