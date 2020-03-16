@@ -1,0 +1,4 @@
+test*
+figures/*
+.vscode/*
+__pycache__/*
