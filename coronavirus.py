@@ -18,6 +18,8 @@ class Coronavirus:
 
     def add_world(self):
         world = self.data.loc[:, 'type': ].groupby(['type'], as_index=False).sum()
+        #world.insert(loc=0, column='Long', value='0')
+        #world.insert(loc=0, column='Lat', value='0')
         world.insert(loc=0, column='Country', value='World')
         world.insert(loc=0, column='State', value='World')
         return pd.concat([self.data, world]).reset_index().drop(columns=['index']) # lat and long for world can be NaN
@@ -142,7 +144,7 @@ class Coronavirus:
 
         def scale_size(df):
             max_size = df.loc[:, 'size'].max()
-            df['size'] = df.apply(lambda x : math.pow(x['size'], 1/3), axis = 1)
+            df['size'] = df.apply(lambda x : math.pow(x['size'], 1/3.5), axis = 1)
             return df
         
         df = self.data.loc[(self.data['type'] == 'confirmed') & (self.data['Country'] != 'World')]

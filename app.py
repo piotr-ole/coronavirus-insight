@@ -152,7 +152,7 @@ app.layout = html.Div(
                             html.H4('Information', style = {'margin' : '0px'}),
                             dcc.Markdown(
                                 '''* This application provides information and statistics about COVID-19. Data is gathered from
-                                    **[source](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)**
+                                    **[Johns Hopkins University repository](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)**
                                     (it's updated once a day).
                                 ''',
                                 style = {'line-height' : '0.2'}
