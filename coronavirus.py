@@ -38,8 +38,19 @@ class Coronavirus:
         for df, type_ in zip(dfs, data_sources['type']):
             df.insert(loc=4, column='type', value=type_) 
         df = pd.concat(dfs)
+        #removing errors from datasource (negative values)
+        errors_positions = df.loc[df.iloc[:, -1] < 0, ['Province/State', 'Country/Region']]
+        keys = list(errors_positions.columns.values)
+        index1 = df.set_index(keys).index
+        index2 = errors_positions.set_index(keys).index
+        df = df[~index1.isin(index2)]
+        ###
         df = self.rename_columns(df)
         return df
+
+    def remove_source_errors(self, df):
+        errors = df.loc[df.iloc[:, -1] < 0, ['Province/State', 'Country/Region']]
+
 
     def to_json(self):
         return self.data.to_json()
